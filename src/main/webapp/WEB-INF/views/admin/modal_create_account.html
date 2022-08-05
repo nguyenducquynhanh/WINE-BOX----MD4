@@ -1,0 +1,65 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<th:block th:fragment="modal_create_account">
+    <div id="modalCreateAccount" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Account Information</h5>
+                    <i type="button" class="icon-copy fa fa-close" aria-hidden="true" data-bs-dismiss="modal" aria-label="Close"></i>
+                    <!--                    <i class="icon-copy fa fa-close" aria-hidden="true"></i>-->
+                </div>
+                <div class="modal-body">
+                    <div class="modal-alert-danger hide"></div>
+
+                    <form id="frmCreateAccount" method="post">
+                        <fieldset class="row g-3">
+                            <div class="col-md-12">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="fullName" name="fullName" placeholder="Enter full name"/>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">User Name</label>
+                                <input type="text" class="form-control" id="userName" name="userName" placeholder="Enter user name"/>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Enter password"/>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="gender">Gender</label>
+                                <select class="form-select" id="gender" name="gender">
+
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <label for = "image" class="form-label">Image</label>
+                                <input type="text" class="form-control" id="image" name="image" placeholder="Enter url image">
+                            </div>
+                            <div class="col-md-12">
+                                <label for="phone" class="form-label">Phone</label>
+                                <input class="form-control" type="text"  id="phone" name="phone" placeholder="Enter phone number"/>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="email" class="form-label">Email</label>
+                                <input class="form-control" type="text"  id="email" name="email" placeholder="Enter email"/>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="address" class="form-label">Address</label>
+                                <input class="form-control" type="text"  id="address" name="address" placeholder="Enter address"/>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnCreateAccount" class="btn btn-outline-primary">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        Add Product
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>

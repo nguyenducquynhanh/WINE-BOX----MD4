@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>List Account</title>
+  <th:block th:replace="/layout/head_index :: head_index"/>
+  <link rel="stylesheet" href="/assets/src/styles/style.css">
+  <script src="/assets/js/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <th:block th:replace="/pre-loader :: pre-loader"/>
+
+  <th:block th:replace="/header :: header"/>
+
+  <th:block th:replace="/right_bar :: right_bar"/>
+
+  <th:block th:replace="/leftbar_admin :: leftbar_admin"/>
+
+  <div class="mobile-menu-overlay"></div>
+  <div class="main-container">
+    <div class="pd-ltr-20 xs-pd-20-10">
+      <div class="min-height-200px">
+        <div class="page-header">
+          <div class="row">
+            <div class="col-md-9 col-sm-9">
+              <div class="title">
+                <h4 style="font-size: 30px"><i class="icon-copy fa fa-address-card-o" aria-hidden="true"></i> List Account</h4>
+              </div>
+              <nav aria-label="breadcrumb" role="navigation">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="/home">Home</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">List Account</li>
+                </ol>
+              </nav>
+            </div>
+<!--            <div class="col-md-3 col-sm-3">-->
+<!--              <div id="DataTables_Table_0_filter" class="dataTables_filter create-modal">-->
+<!--                <a style=" box-shadow: 0 0 1px 1px #4a4b59;" class="btn btn-light create-modal float-end">-->
+<!--                  <i class="icon-copy fa fa-plus-square" aria-hidden="true"></i>-->
+<!--                  <span><strong> Add New Account</strong></span>-->
+<!--                </a>-->
+<!--              </div>-->
+<!--            </div>-->
+          </div>
+        </div>
+        <div class="contact-directory-list">
+          <ul class="row" id="user-list">
+          </ul>
+        </div>
+      </div>
+    </div>
+    <th:block th:replace="/layout/footer :: footer"/>
+    <th:block th:replace="/user/modal_view_profile :: modal_view_profile"/>
+    <th:block th:replace="/admin/modal_create_account :: modal_create_account"/>
+    <th:block th:replace="/admin/modal_update_account :: modal_update_account"/>
+  </div>
+<!--  <th:block th:replace="/layout/script :: script-app"/>-->
+  <script src="/assets/js/sweetalert2.min.js"></script>
+  <th:block th:replace="/layout/script :: script-list-user"/>
+  <script src="/assets/js/jquery.validate-1.19.3.min.js"></script>
+</body>
+<script>
+  let user = new User();
+  let gender = new Gender();
+  let role = new Role();
+  let statusAccount = new StatusAccount();
+
+  function loadUsers() {
+    $.ajax({
+      type: "GET",
+      url: "http://localhost:8080/api/admins/list_user"
+    })
+            .done((item) => {
+              console.log(item);
+              $.each(item, (i, item) => {
+                let str = ``;
+                str +=`
+                <li id="contact${item.id}" class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                    <div  class="contact-directory-box">
+                        <div class="contact-dire-info text-center">
+                            <div class="contact-avatar">
+                                <span>
+                                    <img src="${item.urlImage}" alt="">
+                                </span>
+                            </div>
+                            <div class="contact-name">
+                                <h4>${item.fullName}</h4>
+                                <p><i>${item.gender.gender}</i></p>
+                                <div style="color: #a62ee1;" class="work"><strong><i class="ion-android-person"></i> ${item.role.code}</strong></div>
+                                `;
+
+                if(item.statusAccount.id === 1) {
+
+                  str += `
+                        <span id="blockView" class="text-success work" name="blockView"><i class="icon-copy fa fa-check" aria-hidden="true"></i>${item.statusAccount.statusAccount}</span>
+                        </div>
+                            <div class="contact-skill">
+                                <button title="Update" data-id = "${item.id}" type="button" class="btn btn-warning update" id="btnUpdate(${item.id})"> <i class="icon-copy fa fa-edit" aria-hidden="true"></i></button>
+                                <button title="Block" data-id = "${item.id}" type="button" class="btn btn-danger block" id="btnBlock${item.id}"><i class="icon-copy fa fa-lock" aria-hidden="true"></i></button>`;
+                } else {
+                  str += `
+                            <span id="blockView" class="text-danger work" name="blockView"><i class="icon-copy fa fa-remove" aria-hidden="true"></i> ${item.statusAccount.statusAccount}</span>
+                           </div>
+                            <div class="contact-skill">
+                                <button title="Update" data-id = "${item.id}" type="button" class="btn btn-warning update" id="btnUpdate(${item.id})"> <i class="icon-copy fa fa-edit" aria-hidden="true"></i></button>
+                                <button title="UnBlock" data-id = "${item.id}" type="button" class="btn btn-success block" id="btnBlock${item.id}"> <i class="icon-copy fa fa-unlock" aria-hidden="true"></i></button>`;
+                }
+                                // <button title="Block" data-id = "${item.id}" type="button" class="btn btn-success block" id="btnBlock(${item.id})"> <i class="icon-copy fa fa-unlock" aria-hidden="true"></i></button>
+                       str += `
+                        </div>
+                            <div class="profile-sort-desc"><p style="color: #d31717" class="mb-0">Email: <a href="#"><u><i>${item.email}</i></u></a></p></div>
+                        </div>
+                        <div data-id = "${item.id}" class="view-contact">
+                            <a data-id = "${item.id}">View Profile</a>
+                        </div>
+                    </div>
+                </li>
+                    `;
+                $("#user-list").prepend(str);
+                // console.log(str);
+              })
+              handleBtn();
+              showGender();
+
+            })
+            .fail((jqXHR) => {
+              let str = ``;
+
+              if (jqXHR.status === 401) {
+                setTimeout(() => {
+                  App.SweetAlert.showErrorAlert(App.ERROR_401);
+                }, 3000)
+
+                location.href = "/logout";
+
+              } else if (jqXHR.status === 403) {
+                location.href = "/errors/403";
+
+              } else if (jqXHR.status === 500) {
+                location.href = "/errors/500";
+              } else if (jqXHR.responseJSON) {
+
+                $.each(jqXHR.responseJSON, function (key, value) {
+                  str += `<label id="${key}Read-error" class="error" for="${key}Read">${value}</label>`;
+                  $("#" + key).addClass("error");
+                });
+
+              }
+            })
+  }
+
+  function findById(id) {
+    return $.ajax({
+      type: "GET",
+      url: "http://localhost:8080/api/admins/account/" + id
+    })
+            .done((data) => {
+              user = data;
+            })
+            .fail((err) => {
+              alert("ID not found!");
+            })
+  }
+
+
+  function handleViewProfile() {
+
+    $('.view-contact').on('click', function () {
+      let id = $(this).data('id');
+
+      findById(id).then(function () {
+        $('#modalViewProfile').modal('show');
+        doView();
+      });
+    });
+  }
+
+  function handleUpdateBtn() {
+
+    $('.update').on('click', function () {
+      let id = $(this).data('id');
+      findById(id).then(function () {
+
+        $('#fullNameUp').val(user.fullName);
+        $('#userNameUp').val(user.username);
+        $('#passwordUp').val(user.password);
+        $('#genderUp').val(user.gender.id);
+        $('#urlImageUp').val(user.urlImage);
+        $('#phoneUp').val(user.phone);
+        $('#emailUp').val(user.email);
+        $('#addressUp').val(user.address);
+
+
+        $('#modalUpdateAccount').modal('show');
+      });
+    });
+  }
+
+  function handleBlockAccount() {
+    $(".block").on("click", function () {
+      let id = $(this).data("id");
+
+      findById(id).then(function () {
+        if(user.statusAccount.id === 1) {
+          App.SweetAlertConfirmBlocked.showBlockConfirmDialog()
+                  .then((result) => {
+
+                    if (result.isConfirmed)
+                      doBlockAccount();
+                  });
+        }else {
+          App.SweetAlertConfirmBlocked.showUnlockConfirmDialog()
+                  .then((result) => {
+
+                    if (result.isConfirmed)
+                      doBlockAccount();
+                  });
+        }
+      })
+    })
+  }
+
+  function doUpdateAccount() {
+
+      gender.id = $('#genderUp').val();
+      gender.gender = $("#genderUp option:selected").text();
+
+
+
+      // role.id = $('#roleUp').val();
+      // role.code = $('#roleUp option:selected').text();
+
+      user.fullName = $('#fullNameUp').val();
+      user.username = $('#usernameUp').val();
+      user.password = $('#passwordUp').val();
+      user.gender = gender;
+      user.urlImage = $('#urlImageUp').val();
+      user.phone = $('#phoneUp').val();
+      user.email = $('#emailUp').val();
+      user.address = $('#addressUp').val();
+      // user.role = role;
+
+    $.ajax({
+      headers: {
+        "accept": "application/json",
+        "content-type": "application/json"
+      },
+      type: "PUT",
+      url: "http://localhost:8080/api/admins/update_account/" + user.id,
+      data: JSON.stringify(user)
+    })
+            .done((item) => {
+
+              let str = `
+                         <li id="contact${item.id}" class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                    <div  class="contact-directory-box">
+                        <div class="contact-dire-info text-center">
+                            <div class="contact-avatar">
+                                <span>
+                                    <img src="${item.urlImage}" alt="">
+                                </span>
+                            </div>
+                            <div class="contact-name">
+                                <h4>${item.fullName}</h4>
+                                <p><i>${item.gender.gender}</i></p>
+                                <div style="color: #a62ee1;" class="work"><strong><i class="ion-android-person"></i> ${item.role.code}</strong></div>
+                                `;
+
+              if(item.statusAccount.id === 1) {
+
+                str += `
+                        <span id="blockView" class="text-success work" name="blockView"><i class="icon-copy fa fa-check" aria-hidden="true"></i>${item.statusAccount.statusAccount}</span>
+                        </div>
+                            <div class="contact-skill">
+                                <button title="Update" data-id = "${item.id}" type="button" class="btn btn-warning update" id="btnUpdate(${item.id})"> <i class="icon-copy fa fa-edit" aria-hidden="true"></i></button>
+                                <button title="Block" data-id = "${item.id}" type="button" class="btn btn-danger block" id="btnBlock${item.id}"><i class="icon-copy fa fa-lock" aria-hidden="true"></i></button>`;
+              } else {
+                str += `
+                            <span id="blockView" class="text-danger work" name="blockView"><i class="icon-copy fa fa-remove" aria-hidden="true"></i> ${item.statusAccount.statusAccount}</span>
+                           </div>
+                            <div class="contact-skill">
+                                <button title="Update" data-id = "${item.id}" type="button" class="btn btn-warning update" id="btnUpdate(${item.id})"> <i class="icon-copy fa fa-edit" aria-hidden="true"></i></button>
+                                <button title="UnBlock" data-id = "${item.id}" type="button" class="btn btn-success block" id="btnBlock${item.id}"> <i class="icon-copy fa fa-unlock" aria-hidden="true"></i></button>`;
+              }
+              // <button title="Block" data-id = "${item.id}" type="button" class="btn btn-success block" id="btnBlock(${item.id})"> <i class="icon-copy fa fa-unlock" aria-hidden="true"></i></button>
+              str += `
+                        </div>
+                            <div class="profile-sort-desc"><p style="color: #d31717" class="mb-0">Email: <a href="#"><u><i>${item.email}</i></u></a></p></div>
+                        </div>
+                        <div data-id = "${item.id}" class="view-contact">
+                            <a data-id = "${item.id}">View Profile</a>
+                        </div>
+                    </div>
+                </li>
+                    `;
+
+              let currentRow = $('#contact' + item.id);
+              currentRow.replaceWith(str);
+
+              handleBtn();
+              $("#modalUpdateAccount").modal("hide");
+
+              App.SweetAlert.showSuccessAlert("Update account successful!");
+
+            })
+            .fail((jqXHR) => {
+
+              let str = ``;
+
+              if (jqXHR.status === 401) {
+                App.SweetAlert.showErrorAlert(App.ERROR_401);
+                setTimeout(() => {
+                  location.href = "/logout";
+                }, 3000)
+
+              } else if (jqXHR.status === 403) {
+                App.SweetAlert.showErrorAlert(App.ERROR_403);
+
+              } else if (jqXHR.status === 500) {
+                App.SweetAlert.showErrorAlert(App.ERROR_500);
+              } else if (jqXHR.responseJSON) {
+
+                $.each(jqXHR.responseJSON, function (key, value) {
+                  str += `<label id="${key}Up-error" class="error" for="${key}Up">${value}</label>`;
+                  $("#" + key).addClass("error");
+                });
+                $("#modalUpdateAccount .modal-alert-danger").empty().removeClass("hide").addClass("show").append(str);
+              }
+            })
+  }
+
+  function doBlockAccount() {
+    $.ajax({
+      headers: {
+        "accept": "application/json",
+        "content-type": "application/json"
+      },
+      type: "PUT",
+      url: "http://localhost:8080/api/admins/block_account/" + user.id,
+      data: JSON.stringify(user)
+    })
+            .done((item) => {
+              console.log(item);
+              let str = ``;
+              str +=`
+                <li id="contact${item.id}" class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                    <div  class="contact-directory-box">
+                        <div class="contact-dire-info text-center">
+                            <div class="contact-avatar">
+                                <span>
+                                    <img src="${item.urlImage}" alt="">
+                                </span>
+                            </div>
+                            <div class="contact-name">
+                                <h4>${item.fullName}</h4>
+                                <p><i>${item.gender.gender}</i></p>
+                                <div style="color: #a62ee1;" class="work"><strong><i class="ion-android-person"></i> ${item.role.code}</strong></div>
+                                `;
+
+              if(item.statusAccount.id === 1) {
+
+                str += `
+                        <span id="blockView" class="text-success work" name="blockView"><i class="icon-copy fa fa-check" aria-hidden="true"></i>${item.statusAccount.statusAccount}</span>
+                        </div>
+                            <div class="contact-skill">
+                                <button title="Update" data-id = "${item.id}" type="button" class="btn btn-warning update" id="btnUpdate(${item.id})"> <i class="icon-copy fa fa-edit" aria-hidden="true"></i></button>
+                                <button title="Block" data-id = "${item.id}" type="button" class="btn btn-danger block" id="btnBlock${item.id}"><i class="icon-copy fa fa-lock" aria-hidden="true"></i></button>`;
+              } else {
+                str += `
+                            <span id="blockView" class="text-danger work" name="blockView"><i class="icon-copy fa fa-remove" aria-hidden="true"></i> ${item.statusAccount.statusAccount}</span>
+                           </div>
+                            <div class="contact-skill">
+                                <button title="Update" data-id = "${item.id}" type="button" class="btn btn-warning update" id="btnUpdate(${item.id})"> <i class="icon-copy fa fa-edit" aria-hidden="true"></i></button>
+                                <button title="UnBlock" data-id = "${item.id}" type="button" class="btn btn-success block" id="btnBlock${item.id}"> <i class="icon-copy fa fa-unlock" aria-hidden="true"></i></button>`;
+              }
+              // <button title="Block" data-id = "${item.id}" type="button" class="btn btn-success block" id="btnBlock(${item.id})"> <i class="icon-copy fa fa-unlock" aria-hidden="true"></i></button>
+              str += `
+                        </div>
+                            <div class="profile-sort-desc"><p style="color: #d31717" class="mb-0">Email: <a href="#"><u><i>${item.email}</i></u></a></p></div>
+                        </div>
+                        <div data-id = "${item.id}" class="view-contact">
+                            <a data-id = "${item.id}">View Profile</a>
+                        </div>
+                    </div>
+                </li>
+                    `;
+
+              let currentRow = $('#contact' +item.id);
+              currentRow.replaceWith(str);
+
+              handleBtn();
+
+              App.SweetAlert.showSuccessAlert("Block account successful!");
+
+            })
+            .fail((jqXHR) => {
+
+              if (jqXHR.status === 401) {
+                App.SweetAlert.showErrorAlert(App.ERROR_401);
+                setTimeout(() => {
+                  location.href = "/logout";
+                },3000)
+
+              } else if(jqXHR.status === 403) {
+                App.SweetAlert.showErrorAlert(App.ERROR_403);
+
+              }  else if(jqXHR.status === 500) {
+                App.SweetAlert.showErrorAlert(App.ERROR_500);
+              }
+            })
+  }
+
+  function doView() {
+    // console.log(user);
+    $.ajax({
+      "type": "GET",
+      "url": "http://localhost:8080/api/admins/view/" + user.id
+    })
+            .done((item) => {
+              console.log(item);
+              let str = `
+                <div class='row g-3'>
+                        <div id="imageView" name="imageView" class="col-md-5 align-middle">
+                            <img width="650px" height="auto" class="align-middle ml-3" style="al"
+                                src="${item.urlImage}"
+                                alt="" />
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-sm-12">
+                                <!-- <label class = "label" for="productNameRead" class="form-label">Wine Name</label> -->
+                                <span class="text-success" id="roleView" name="roleView"><strong><i class="ion-android-person"></i> ${item.role.code}</strong></span>
+                            </div>
+                            <div class="col-sm-12 mt-5">
+                                <!-- <label class = "label" for="productNameRead" class="form-label">Wine Name</label> -->
+                                <span style="color: #AF0707; font-size: 30px; margin-top: -20px" id="fullNameView" name="fullNameView">${item.fullName}</span>
+                            </div>
+                            <div class="col-sm-12 mt-3">
+                                <!-- <p> -->
+                            <div class="col-sm-12" >
+                                <label class="label" for="genderView"><strong>Gender:</strong></label>
+                                <span id="genderView" name="genderView"> <i> ${item.gender.gender}</i></span>
+                            </div>
+                            <div  class="col-sm-12" >
+                                <label class="label" for="phoneView" class="form-label"><strong>Phone:</strong></label>
+                                <span id="phoneView" name="phoneView"> <i> ${item.phone}</i></span>
+                            </div>
+                            <div class="col-sm-12">
+                                <label class="label" for="emailView" class="form-label"><strong>Email:</strong></label>
+                                <span id="emailView" name="emailView"> <i> ${item.email}</i></span>
+                            </div>
+                            <div class="col-sm-12">
+                                <label class="label" for="addressView"><strong>Address:</strong></label>
+                                <span id="addressView" name="addressView"> <i> ${item.address}</i></span>
+                            </div> `;
+
+              if(item.statusAccount.id === 1) {
+                 str +=  `<span id="blockView" class="text-success" name="blockView"><i class="icon-copy fa fa-unlock" aria-hidden="true"></i> ${item.statusAccount.statusAccount}</span>
+
+                            </div>
+                        </div>
+                </div>`;
+              } else {
+                str += `<span id="blockView" class="text-danger" name="blockView"><i class="icon-copy fa fa-lock" aria-hidden="true"></i> ${item.statusAccount.statusAccount}</span>
+
+                            </div>
+                        </div>
+                </div>`;
+              }
+
+
+              //                   <!-- <label class = "label" for="priceRead" class="form-label">Price</label> -->
+              //                   <span id="blockView" class="text-success" name="blockView"><i class="icon-copy fa fa-unlock" aria-hidden="true"></i> ${item.statusAccount.statusAccount}</span>
+              //
+              //                    <span id="blockView" class="text-success" name="blockView"><i class="icon-copy fa fa-unlock" aria-hidden="true"></i> ${item.statusAccount.statusAccount}</span>
+              //
+              //               </div>
+              //           </div>
+              //   </div>
+              //             `;
+              $("#frmViewProfile div").html(str);
+              // handleBtn();
+
+            })
+            .fail((jqXHR) => {
+              alert("adsds");
+              let str = ``;
+
+              if (jqXHR.status === 401) {
+                setTimeout(() => {
+                  App.SweetAlert.showErrorAlert(App.ERROR_401);
+                }, 3000)
+
+                location.href = "/logout";
+
+              } else if (jqXHR.status === 403) {
+                App.SweetAlert.showErrorAlert(App.ERROR_403);
+
+              } else if (jqXHR.status === 500) {
+                App.SweetAlert.showErrorAlert(App.ERROR_500);
+              } else if (jqXHR.responseJSON) {
+
+                $.each(jqXHR.responseJSON, function (key, value) {
+                  str += `<label id="${key}View-error" class="error" for="${key}View">${value}</label>`;
+                  $("#" + key).addClass("error");
+                });
+              }
+              $("#modalViewProfile .modal-alert-danger").empty().removeClass("hide").addClass("show").append(str);
+            })
+  }
+
+  function showGender() {
+
+    $.ajax({
+      type: "GET",
+      url: "http://localhost:8080/api/gender"
+    }).done((data) => {
+
+      // $("#gender").empty();
+      $("#genderUp").empty();
+      // $("#genderView").empty();
+
+      $.each(data, (i, item) => {
+        let str = `<option value="${item.id}" >${item.gender}</option>`;
+
+        $("#genderUp").append(str);
+      })
+    })
+            .fail((err) => {
+                alert("Load gender fail!");
+            })
+  }
+
+  // function doCreateAccount() {
+  //   gender.id = $('#gender').val();
+  //   gender.gender = $("#gender option:selected").text();
+  //
+  //   role.id = $('#role').val();
+  //   role.code = $('#role option:selected').text();
+  //
+  //   delete user.id;
+  //   user.fullName = $('#fullName').val();
+  //   user.username = $('#username').val();
+  //   user.password = $('#password').val();
+  //   user.gender = gender;
+  //   user.urlImage = $('#urlImage').val();
+  //   user.phone = $('#phone').val();
+  //   user.email = $('#email').val();
+  //   user.address = $('#address').val();
+  //   user.role = role;
+  //   user.deleted = 0;
+  //   $.ajax({
+  //     "headers": {
+  //       "accept": "application/json",
+  //       "content-type": "application/json"
+  //     },
+  //     "type": "POST",
+  //     "url": "http://localhost:8080/api/admins/create_account",
+  //     "data": JSON.stringify(user)
+  //   })
+  //           .done((item) => {
+  //             let str = `
+  //                      <li class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+  //                   <div class="contact-directory-box">
+  //                       <div class="contact-dire-info text-center">
+  //                           <div class="contact-avatar">
+  //                       <span>
+  //                           <img src="${item.urlImage}" alt="">
+  //                       </span>
+  //                           </div>
+  //                           <div class="contact-name">
+  //                               <h4>${item.fullName}</h4>
+  //                               <p><i>${item.gender.gender}</i></p>
+  //                               <div style="color: #a62ee1;" class="work"><strong><i class="ion-android-person"></i> ${item.role.code}</strong></div>
+  //                           </div>
+  //                           <div class="contact-skill">
+  //                               <button title="Update" data-id = "${item.id}" type="button" class="btn btn-warning update" id="btnUpdate(${item.id})"> <i class="icon-copy fa fa-edit" aria-hidden="true"></i></button>
+  //                               <button title="Block" data-id = "${item.id}" type="button" class="btn btn-success block" id="btnBlock(${item.id})"> <i class="icon-copy fa fa-unlock" aria-hidden="true"></i></button>
+  //                           </div>
+  //                           <div class="profile-sort-desc"><p style="color: #d31717" class="mb-0">Email: <a href="#"><u><i>${item.email}</i></u></a></p></div>
+  //                       </div>
+  //                       <div data-id = "${item.id}" class="view-contact">
+  //                           <a data-id = "${item.id}">View Profile</a>
+  //                       </div>
+  //                   </div>
+  //               </li>
+  //                   `;
+  //             $("#user-list").prepend(str);
+  //             handleBtn();
+  //
+  //             $('#modalCreateAccount').modal('hide');
+  //
+  //             App.SweetAlert.showSuccessAlert('Create new account successful!');
+  //
+  //           })
+  //           .fail((jqXHR) => {
+  //             // $('#modalAddProduct .modal-alert-danger').html('').removeClass('hide').addClass('show');
+  //             // App.SweetAlert.showErrorAlert("Add new wine fail!!")
+  //             let str = ``;
+  //
+  //             if (jqXHR.status === 401) {
+  //               setTimeout(() => {
+  //                 App.SweetAlert.showErrorAlert(App.ERROR_401);
+  //               }, 3000)
+  //
+  //               location.href = "/logout";
+  //
+  //             } else if (jqXHR.status === 403) {
+  //               App.SweetAlert.showErrorAlert(App.ERROR_403);
+  //
+  //             } else if (jqXHR.status === 500) {
+  //               App.SweetAlert.showErrorAlert(App.ERROR_500);
+  //             } else if (jqXHR.responseJSON) {
+  //
+  //               $.each(jqXHR.responseJSON, function (key, value) {
+  //                 str += `<label id="${key}-error" class="error" for="${key}">${value}</label>`;
+  //                 $("#" + key).addClass("error");
+  //               });
+  //
+  //             }
+  //
+  //             $("#modalCreateAccount .modal-alert-danger").empty().removeClass("hide").addClass("show").append(str);
+  //           })
+  // }
+
+  // $('#frmCreateAccount').validate({
+  //   // rules: {
+  //   //     userName: {
+  //   //         required: true,
+  //   //         minlength: 3,
+  //   //         maxlength: 100
+  //   //     },
+  //   //     image: {
+  //   //         required: true,
+  //   //         minlength: 10,
+  //   //         maxlength: 10000
+  //   //     },
+  //   //     price: {
+  //   //         required: true,
+  //   //         min: 0,
+  //   //         max: 10000
+  //   //     },
+  //   //     quantity: {
+  //   //         required: true,
+  //   //         min: 0,
+  //   //         max: 1000
+  //   //     }
+  //   // },
+  //   // messages: {
+  //   //     userName: {
+  //   //         required: "Vui lòng nhập tên rượu đầy đủ",
+  //   //         minlength: $.validator.format("Họ tên tối thiểu {0} ký tự"),
+  //   //         maxlength: $.validator.format("Họ tên tối đa {0} ký tự")
+  //   //     },
+  //   //     image: {
+  //   //         required: "Vui lòng nhập image đầy đủ",
+  //   //         minlength: $.validator.format("image tối thiểu {0} ký tự"),
+  //   //         maxlength: $.validator.format("image tối đa {0} ký tự")
+  //   //     },
+  //   //     price: {
+  //   //         required: "Giá không được để trống!",
+  //   //         min: $.validator.format("Giá tối thiểu {0}$"),
+  //   //         max: $.validator.format("Giá tối đa {0}$")
+  //   //     },
+  //   //     quantity: {
+  //   //         required: "Số lượng không được để trống!",
+  //   //         min: $.validator.format("số lượng tối thiểu {0} sản phẩm"),
+  //   //         max: $.validator.format("số lượng tối đa {0} sản phẩm")
+  //   //     }
+  //   // },
+  //   // errorLabelContainer: "#modalAddProduct .modal-alert-danger",
+  //   // errorPlacement: function (error, element) {
+  //   //     error.appendTo("#modalAddProduct .modal-alert-danger");
+  //   // },
+  //   // showErrors: function(errorMap, errorList) {
+  //   //     if (this.numberOfInvalids() > 0) {
+  //   //         $("#modalAddProduct .modal-alert-danger").removeClass("hide").addClass("show");
+  //   //     } else {
+  //   //         $("#modalAddProduct .modal-alert-danger").removeClass("show").addClass("hide").empty();
+  //   //         $("#frmAddProduct input.error").removeClass("error");
+  //   //     }
+  //   //     this.defaultShowErrors();
+  //   // },
+  //   submitHandler: function () {
+  //     doCreateAccount();
+  //   }
+  // })
+
+  $('#frmUpdateAccount').validate({
+    // rules: {
+    //     nameUp: {
+    //         required: true,
+    //         minlength: 3,
+    //         maxlength: 50
+    //     },
+    //     imageUp: {
+    //         required: true,
+    //         // maxlength: 255
+    //     },
+    //     amountUp: {
+    //         required: true,
+    //         min: 10,
+    //         max: 100000
+    //     },
+    //     priceUp: {
+    //         required: true,
+    //         min: 0,
+    //         max: 1000000000
+    //     }
+    // },
+    // messages: {
+    //     nameUp: {
+    //         required: "Vui lòng nhập tên đầy đủ",
+    //         minlength: $.validator.format("Họ tên tối thiểu {0} ký tự"),
+    //         maxlength: $.validator.format("Họ tên tối đa {0} ký tự")
+    //     },
+    //     imageUp: {
+    //         required: "Vui lòng nhập đường đẫn ảnh",
+    //         // maxlength: $.validator.format("Đường đẫn ảnh quá dài tối đa {0} ký tự")
+    //     },
+    //     amountUp: {
+    //         required: "Vui lòng nhập số lượng",
+    //         min: $.validator.format("Số lượng tối thiểu {0} "),
+    //         max: $.validator.format("Số lượng tối đa {0}  ")
+    //     },
+    //     priceUp: {
+    //         required: "Vui lòng nhập giá",
+    //         min: $.validator.format("Giá sản phẩm tối thiểu {0}đ!"),
+    //         max: $.validator.format("Giá sản phẩm tối đa {0}đ!")
+    //     }
+    // },
+    // errorLabelContainer: "#mdUpdate .modal-alert-danger",
+    // errorPlacement: function (error, element) {
+    //     error.appendTo("#mdUpdate .modal-alert-danger");
+    // },
+    // showErrors: function(errorMap, errorList) {
+    //     if (this.numberOfInvalids() > 0) {
+    //         $("#mdUpdate .modal-alert-danger").removeClass("hide").addClass("show");
+    //     } else {
+    //         $("#mdUpdate .modal-alert-danger").removeClass("show").addClass("hide").empty();
+    //         $("#frmUpdate input.error").removeClass("error");
+    //     }
+    //     this.defaultShowErrors();
+    // },
+    submitHandler: function () {
+      doUpdateAccount();
+    }
+  });
+
+  // $('.create-modal').on('click', () => {
+  //   $('#modalCreateAccount').modal('show');
+  // })
+
+  // $('#btnCreateAccount').on('click', () => {
+  //   $('#modalCreateAccount .modal-alert-danger').removeClass('show').addClass('hide');
+  //   $("#modalCreateAccount .modal-alert-danger").empty();
+  //   $('#frmCreateAccount').submit();
+  // })
+  //
+  // $("#modalCreateAccount").on("hidden.bs.modal", function () {
+  //   $("#modalCreateAccount .modal-alert-danger").empty();
+  //   $("#frmCreateAccount")[0].reset();
+  //   $('#modalCreateAccount .modal-alert-danger').removeClass('show').addClass('hide');
+  // })
+
+  $('#btnUpdateAccount').on('click', function () {
+    $('#modalUpdateAccount .modal-alert-danger').removeClass('show').addClass('hide');
+    $("#modalUpdateAccount .modal-alert-danger").empty();
+    $('#frmUpdateAccount').submit();
+  })
+
+  $("#modalUpdateAccount").on("hidden.bs.modal", function () {
+    $('#modalUpdateAccount .modal-alert-danger').empty();
+    $("#modalUpdateAccount.modal-alert-danger").removeClass("show").addClass("hide");
+    $("#frmUpdateAccount input.error").removeClass("error");
+    $('#frmUpdateAccount')[0].reset();
+    $("#frmUpdateAccount").validate().resetForm();
+  })
+
+  $('.btn-close').on('click', () => {
+    $('#modalViewProfile').modal('hide');
+    // $('#modalCreateAccount').modal('hide');
+    $('#modalUpdateAccount').modal('hide');
+
+  });
+
+  // $('#btn-close').on('click', () => {
+  //   $('#modalReadProduct').modal('hide');
+  //
+  // });
+
+  function handleBtn() {
+    handleViewProfile();
+    handleUpdateBtn();
+    handleBlockAccount();
+  }
+
+
+
+  loadUsers();
+</script>
+</html>

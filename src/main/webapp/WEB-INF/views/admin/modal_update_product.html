@@ -1,0 +1,66 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<th:block th:fragment="modal_update_product">
+    <div id="modalUpdateProduct" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Wine Information</h5>
+                    <i type="button" class="icon-copy fa fa-close" aria-hidden="true" data-bs-dismiss="modal" aria-label="Close"></i>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-alert-danger hide"></div>
+
+                    <form id="frmUpdateProduct" method="post">
+                        <fieldset class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Wine Name</label>
+                                <input type="text" class="form-control" id="productNameUp" name="productNameUp" placeholder="Enter wine name"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="categoryUp">Type</label>
+                                <select class="form-select" id="categoryUp" name="categoryUp">
+
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <label for = "imageUp" class="form-label">Image</label>
+                                <input type="text" class="form-control" id="imageUp" name="imageUp" placeholder="Enter url image">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="priceUp" class="form-label">Price</label>
+                                <input class="form-control" type="text"  id="priceUp" name="priceUp" placeholder="Enter price"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="quantityUp" class="form-label">Quantity</label>
+                                <input class="form-control" type="text"  id="quantityUp" name="quantityUp" placeholder="Enter quantity"/>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="yearUp" class="form-label">Year</label>
+                                <input class="form-control" type="text"  id="yearUp" name="yearUp" placeholder="Enter year"/>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="capacityUp">Capacity</label>
+                                <select class="form-select" id="capacityUp" name="capacityUp">
+
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="originUp" class="form-label">Origin</label>
+                                <input class="form-control" type="text"  id="originUp" name="originUp" placeholder="Enter origin"/>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnUpdateProduct" class="btn btn-outline-warning">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        Update Product
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>

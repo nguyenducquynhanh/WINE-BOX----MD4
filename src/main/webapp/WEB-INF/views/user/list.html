@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <!-- Basic Page Info -->
+    <meta charset="utf-8">
+    <title>Product</title>
+    <th:block th:replace="/layout/head_index :: head_index"/>
+    <link rel="stylesheet" type="text/css" href="/assets/src/fonts/font-awesome/css/font-awesome.min.css">
+    <script src="/assets/js/jquery-3.6.0.min.js"></script>
+    <style>
+        #frmReadProduct label {
+            font-size: 15px;
+            /*color: #af0707;*/
+            margin-top: -3px;
+            margin-bottom: -1px;
+            /*color: #7ACA39;*/
+            color: #cbb30f;
+        }
+        #frmReadProduct p{
+            font-size: 12px;
+            color: #4d4e56;
+        }
+
+        .label {
+            /* font-size: 20px; */
+            /*color: #7ACA39;*/
+        }
+        #statusRead {
+            /*color: #FFBF00;*/
+            color:#178a17;
+            font-weight: bold;
+            font-size: 22px;
+        }
+        #productNameRead {
+            font-size: 20px;
+            font-weight:bold;
+        }
+        #priceRead {
+            magin-top: 10px;
+            color: #AF0707;
+            font-weight:bold;
+            font-size: 25px;
+        }
+        #frmReadProduct p{
+            margin-top: -25px;
+            margin-bottom: 25px;
+        }
+
+    </style>
+
+</head>
+<body>
+<th:block th:replace="/pre-loader :: pre-loader"/>
+
+<th:block th:replace="/header :: header"/>
+
+<th:block th:replace="/right_bar :: right_bar"/>
+
+<th:block th:replace="/leftbar_user :: leftbar_user"/>
+
+<div class="mobile-menu-overlay"></div>
+
+<div class="main-container">
+    <div class="pd-ltr-20 xs-pd-20-10">
+        <div class="min-height-200px">
+            <div class="page-header">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12">
+                        <div class="title">
+                            <h4 style="font-size: 30px">Product</h4>
+                        </div>
+                        <nav aria-label="breadcrumb" role="navigation">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/home">Dashboard</a></li>
+                                <li class="breadcrumb-item">Product</li>
+                                <li class="breadcrumb-item active" aria-current="page">Wine</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <div class="product-wrap">
+                <div class="product-list">
+                    <ul id="product-list" class="row">
+
+                    </ul>
+                </div>
+                <div class="blog-pagination mb-30">
+                    <div class="btn-toolbar justify-content-center mb-15">
+                        <div class="btn-group">
+                            <a href="#" class="btn btn-outline-primary prev"><i class="fa fa-angle-double-left"></i></a>
+                            <span class="btn btn-secondary current">1</span>
+                            <a href="#" class="btn btn-outline-secondary">2</a>
+                            <a href="#" class="btn btn-outline-secondary">3</a>
+                            <a href="#" class="btn btn-outline-primary next"><i
+                                    class="fa fa-angle-double-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <th:block th:replace="/layout/footer :: footer"/>
+        <th:block th:replace="/admin/modal_read_product :: modal_read_product"/>
+    </div>
+</div>
+<th:block th:replace="/layout/script :: script-script"/>
+<th:block th:replace="/layout/script :: script-app"/>
+<script src="/assets/js/jquery.validate-1.19.3.min.js"></script>
+</body>
+<script>
+    function loadProducts() {
+
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:8080/api/users"
+        })
+            .done((item) => {
+                $.each(item, (i, item) => {
+                    let str = `
+                        <li class="col-lg-3 col-md-6 col-sm-12">
+                            <div class="product-box">
+                                <div class="producct-img"><img src="${item.urlImage}" alt=""/></div>
+                                <div class="product-caption">
+                                    <h4><a style="margin-bottom: 30px; " href="#">${item.productName}</a></h4>
+                                    <div class="price">
+                                        <!-- <del>$55.5</del><ins>$49.5</ins> -->
+                                        <!-- <ins style="color: #9d1515">$${item.price}</ins> -->
+                                        <ins  style="margin-bottom: -10px; color: #af0707">$${item.price}</ins>
+                                    </div>
+                                    <div class="price" style="text-decoration: none">
+                                        <ins data-id = "${item.id}"><span style="color: #178a17"> ${item.status.status} : ${item.quantity}</span></ins>
+                                    </div>
+
+                                    <div>
+                                        <button data-id = "${item.id}" style="margin-bottom: 5px" href="" class="btn btn-outline-warning btn-sm read"><i class="icon-copy fa fa-list-alt" aria-hidden="true"></i> Read more</button>
+                                        <button href="" class="btn btn-outline-primary btn-sm cart"><i class="icon-copy fa fa-shopping-cart" aria-hidden="true"></i> Add to cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    `;
+                    $("#product-list").append(str);
+                })
+                handleBtn();
+                // showCategory();
+            })
+            .fail((jqXHR) => {
+                let str = ``;
+
+                if (jqXHR.status === 401) {
+                    setTimeout(() => {
+                        App.SweetAlert.showErrorAlert(App.ERROR_401);
+                    }, 3000)
+
+                    location.href = "/logout";
+
+                } else if (jqXHR.status === 403) {
+                    location.href = "/errors/403";
+
+                } else if (jqXHR.status === 500) {
+                    location.href = "/errors/500";
+                } else if (jqXHR.responseJSON) {
+
+                    $.each(jqXHR.responseJSON, function (key, value) {
+                        str += `<label id="${key}Read-error" class="error" for="${key}Read">${value}</label>`;
+                        $("#" + key).addClass("error");
+                    });
+
+                }
+            })
+    }
+
+    function findById(id) {
+        return $.ajax({
+            type: "GET",
+            url: "http://localhost:8080/api/users/" + id
+        })
+            .done((data) => {
+                // console.log(data);
+                product = data;
+            })
+            .fail(() => {
+                alert("ID not found!");
+                // location.replace("/login");
+            })
+    }
+
+    function doRead() {
+        $.ajax({
+            "type": "GET",
+            "url": "http://localhost:8080/api/users/read/" + product.id
+        })
+            .done((item) => {
+                // console.log(item);
+                let str = `
+                <div class='row g-3'>
+                        <div id="imageRead" name="imageRead" class="col-md-5">
+                            <img width="650px" height="auto" class="align-middle ml-3" style="al"
+                                src="${item.urlImage}"
+                                alt="" />
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-sm-12">
+                                <!-- <label class = "label" for="productNameRead" class="form-label">Wine Name</label> -->
+                                <span id="statusRead" name="statusRead"><i class="icon-copy fa fa-check" aria-hidden="true"></i> ${item.status.status}</span>
+                            </div>
+                            <div class="col-sm-12 mt-5">
+                                <!-- <label class = "label" for="productNameRead" class="form-label">Wine Name</label> -->
+                                <span id="productNameRead" name="productNameRead">${item.productName}</span>
+                            </div>
+                            <div class="col-sm-12 mt-3">
+                                <!-- <p> -->
+                                <label class="label" for="originRead" class="form-label"><strong>Origin:</strong></label>
+                                <span id="originRead" name="originRead"> ${item.origin}</span>
+                            </div>
+                            <div class="col-sm-12">
+                                <label class="label" for="categoryRead"><strong>Category:</strong></label>
+                                <span id="categoryRead" name="categoryRead"> ${item.category.category}</span>
+                            </div>
+                            <div class="col-sm-12">
+                                <label class="label" for="yearRead" class="form-label"><strong>Year:</strong></label>
+                                <span id="yearRead" name="yearRead"> ${item.year}</span>
+                            </div>
+                            <div class="col-sm-12">
+                                <label class="label" for="capacityRead"><strong>Capacity:</strong></label>
+                                <span id="capacityRead" name="capacityRead"> ${item.capacity.capacity}</span>
+                            </div>
+                            <div class="col-sm-12 mt-5">
+                                <p>
+                                    Clear and bright with fresh clean aromas of gooseberry, grapefruit, passionfruit,
+                                    and lemon balm. An aromatic and flavourful Sauvignon Blanc. This fabulous sipping
+                                     wine has refreshing flavours of citrus and gooseberry.
+                                </p>
+                            </div>
+                            <div class="col-sm-12 mt-3">
+                                <!-- <label class = "label" for="priceRead" class="form-label">Price</label> -->
+                                <span id="priceRead" name="priceRead">$${item.price}</span>
+                            </div>
+                        </div>
+                </div>
+                          `;
+                // console.log(str);
+                $("#frmReadProduct div").html(str);
+
+                // handleBtn();
+
+                // $('#modalReadProduct').modal('hide');
+
+                // App.SweetAlert.showSuccessAlert('Add new wine successful!');
+
+            })
+            .fail((jqXHR) => {
+                let str = ``;
+
+                if (jqXHR.status === 401) {
+                    setTimeout(() => {
+                        App.SweetAlert.showErrorAlert(App.ERROR_401);
+                    }, 3000)
+
+                    location.href = "/logout";
+
+                } else if (jqXHR.status === 403) {
+                    alert("adsda");
+                    location.href = "/error/403";
+
+                } else if (jqXHR.status === 500) {
+                    App.SweetAlert.showErrorAlert(App.ERROR_500);
+                } else if (jqXHR.responseJSON) {
+
+                    $.each(jqXHR.responseJSON, function (key, value) {
+                        str += `<label id="${key}Read-error" class="error" for="${key}Read">${value}</label>`;
+                        $("#" + key).addClass("error");
+                    });
+
+                }
+
+                // $("#modalReadProduct .modal-alert-danger").empty().removeClass("hide").addClass("show").append(str);
+            })
+    }
+
+    function handleReadProduct() {
+
+        $('.read').on('click', function () {
+            let id = $(this).data('id');
+            // console.log(id);
+            findById(id).then(function () {
+
+
+                $('#modalReadProduct').modal('show');
+                doRead();
+            });
+        });
+    }
+
+    // $('#btnReadProduct').on('click', () => {
+    //     $('#modalReadProduct .modal-alert-danger').removeClass('show').addClass('hide');
+    //     $("#modalReadProduct .modal-alert-danger").empty();
+    //     $('#frmReadProduct').submit();
+    // });
+
+    $('#btn-close').on('click', () => {
+        $('#modalReadProduct').modal('hide');
+
+    });
+
+    function handleBtn() {
+        // handleUpdateBtn();
+        // handleBlockProduct();
+        handleReadProduct();
+    }
+
+    loadProducts();
+</script>
+</html>

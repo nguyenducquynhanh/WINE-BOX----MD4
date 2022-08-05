@@ -1,0 +1,67 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<th:block th:fragment="modal_add_product">
+    <div id="modalAddProduct" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Wine Information</h5>
+                    <i type="button" class="icon-copy fa fa-close" aria-hidden="true" data-bs-dismiss="modal" aria-label="Close"></i>
+<!--                    <i class="icon-copy fa fa-close" aria-hidden="true"></i>-->
+                </div>
+                <div class="modal-body">
+                    <div class="modal-alert-danger hide"></div>
+
+                    <form id="frmAddProduct" method="post">
+                        <fieldset class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Wine Name</label>
+                                <input type="text" class="form-control" id="productName" name="productName" placeholder="Enter wine name"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="category">Type</label>
+                                <select class="form-select" id="category" name="category">
+
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <label for = "image" class="form-label">Image</label>
+                                <input readonly type="text" value="/assets/src/images/vip/winebottle.png" class="form-control" id="image" name="image" placeholder="Enter url image">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="price" class="form-label">Price</label>
+                                <input class="form-control" type="text"  id="price" name="price" placeholder="Enter price"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="quantity" class="form-label">Quantity</label>
+                                <input class="form-control" type="text"  id="quantity" name="quantity" placeholder="Enter quantity"/>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="year" class="form-label">Year</label>
+                                <input class="form-control" type="text"  id="year" name="quantity" placeholder="Enter year"/>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="capacity">Capacity</label>
+                                <select class="form-select" id="capacity" name="capacity">
+
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="origin" class="form-label">Origin</label>
+                                <input class="form-control" type="text"  id="origin" name="origin" placeholder="Enter origin"/>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnAddProduct" class="btn btn-outline-primary">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        Add Product
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>

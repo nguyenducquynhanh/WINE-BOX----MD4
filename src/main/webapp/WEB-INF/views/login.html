@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <title>CodePen - Animated Form</title>
+    <th:block th:replace="/layout/head :: head"/>
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/assets/src/styles/login.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<section class="forms-section">
+    <h1 style="font-size: 30px" class="section-title"><i>𝓦𝓮𝓵𝓬𝓸𝓶𝓮!</i></h1>
+    <img style="margin-bottom: 10px; margin-top: 15px" src="/assets/src/images/vip/Screenshot_3.png" width="265" height="77" alt="">
+    <!--            <h5 style="text-align: left" class="section-title is-active">We're glad you can come back again, thank you very much!!</h5>-->
+    <!--            <h5 style="text-align: right" class="section-title is-active">Don't have an account? Sign up and let's get start!!</h5>-->
+    <div class="forms">
+        <div class="form-wrapper is-active">
+            <button type="button" class="switcher switcher-login">
+                Login
+                <span class="underline"></span>
+            </button>
+            <form class="form form-login">
+                <fieldset>
+                    <legend>Please enter your email and password for login </legend>
+                    <div class="input-block">
+                        <label for="name">Username</label>
+                        <input id="name" type="email" required>
+                    </div>
+                    <div class="input-block">
+                        <label for="pass">Password</label>
+                        <input id="pass" type="password" required>
+                    </div>
+                </fieldset>
+                <input type="button" id="btnLogin" class="btn-login" value="Login"></input>
+            </form>
+        </div>
+        <div class="form-wrapper">
+            <button type="button" class="switcher switcher-signup">
+                Sign Up
+                <span class="underline"></span>
+            </button>
+            <form class="form form-signup">
+                <fieldset>
+                    <legend>Please enter your email, password and password confirmation for sign up</legend>
+<!--                    <div class="input-block">-->
+<!--                        <label for="role">Role</label>-->
+<!--                        <input id="role" type="text" required>-->
+<!--                    </div>-->
+                    <div class="row">
+                        <div class="input-block col-sm-6">
+                            <label for="regname">Username</label>
+                            <input id="regname" type="email" value="" required >
+                        </div>
+                        <div class="input-block col-sm-6">
+                            <label for="regpass">Password</label>
+                            <input id="regpass" type="password" value="" required>
+                        </div>
+                    </div>
+
+                    <div class="row ">
+                        <div class="input-block col-sm-6">
+                            <label for="regfullName">Full Name</label>
+                            <input id="regfullName" type="text" required>
+                        </div>
+                        <div class="input-block col-sm-6">
+                            <label for="reggender">Gender</label>
+                            <select style="height: 42px" id="reggender" required></select>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="input-block col-sm-6">
+                            <label for="regphone">Phone Number</label>
+                            <input id="regphone" type="text" required>
+                        </div>
+                        <div class="input-block col-sm-6">
+                            <label for="regaddress">Address</label>
+                            <input id="regaddress" type="text" required>
+                        </div>
+                    </div>
+                </fieldset>
+                <input type="button" id="btnRegister" class="btn-signup" value="Continue"/>
+            </form>
+        </div>
+    </div>
+</section>
+<!-- partial -->
+<th:block th:replace="/layout/script :: script-app"/>
+<th:block th:replace="/layout/script :: script-script"/>
+<script>
+    const switchers = [...document.querySelectorAll('.switcher')]
+
+    switchers.forEach(item => {
+        item.addEventListener('click', function() {
+            switchers.forEach(item => item.parentElement.classList.remove('is-active'))
+            this.parentElement.classList.add('is-active')
+        })
+    })
+
+    $("#btnRegister").on("click", () => {
+        let user = {
+            userName: $("#regname").val(),
+            password: $("#regpass").val(),
+            fullName: $("#regfullName").val(),
+            gender: {
+                id: $("#reggender").val()
+            },
+            urlImage: "/assets/src/images/vip/cross.png",
+            phone: $("#regphone").val(),
+            email: $("#regname").val(),
+            address: $("#regaddress").val(),
+            role: {
+                id: 1
+            },
+            statusAccount: {
+                id:1
+            }
+        }
+        console.log(user);
+
+        $.ajax({
+            "headers": {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            "type": "POST",
+            "url": "http://localhost:8080/api/auth/register",
+            "data": JSON.stringify(user)
+        })
+            .done(() => {
+                App.SweetAlert.showSuccessAlert("Sign up successful!!");
+                App.IziToast.showErrorAlert("ádsadsa");
+                setTimeout(() => {
+                    $(".switcher-login").click();
+                }, 2000);
+            })
+            .fail((jqXHR) => {
+                console.log(jqXHR)
+                alert("Register fail!");
+            })
+    });
+
+    $("#btnLogin").on("click", () => {
+        let user = {
+            userName: $("#name").val(),
+            password: $("#pass").val()
+        }
+
+
+        $.ajax({
+            "headers": {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            "type": "POST",
+            "url": "http://localhost:8080/api/auth/login",
+            "data": JSON.stringify(user)
+        })
+            .done((resp) => {
+                console.log(resp);
+                App.SweetAlert.showSuccessAlert('Login successful!');
+
+
+                for (let role of resp.roles) {
+
+                    if (role.authority === "USER") {
+                        setTimeout(function () {
+                            window.location.href = `/home/users/${resp.id}`;
+                        }, 1000);
+                        return;
+                    }
+                    setTimeout(function () {
+                        window.location.href = `/home/admins/${resp.id}`;
+                    }, 1000);
+                }
+
+
+
+
+            })
+            .fail((jqXHR) => {
+                App.SweetAlert.showErrorAlert('Email or Password is incorrect!');
+            })
+    });
+
+    function showGender() {
+
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:8080/api/gender"
+        }).done((data) => {
+            // console.log(data);
+            // $("#gender").empty();
+            $("#reggender").empty();
+            // $("#genderView").empty();
+
+            $.each(data, (i, item) => {
+                let str = `<option value="${item.id}" class="form-control" >${item.gender}</option>`;
+                // $("#gender").append(str);
+                $("#reggender").append(str);
+                // $("#genderView").append(str);
+            })
+        })
+            .fail((err) => {
+                alert("Load gender fail!");
+            })
+    }
+showGender();
+</script>
+
+</body>
+</html>
+

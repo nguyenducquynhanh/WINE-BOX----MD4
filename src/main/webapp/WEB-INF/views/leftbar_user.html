@@ -1,0 +1,101 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<th:block th:fragment="leftbar_user">
+    <div class="left-side-bar">
+        <div class="brand-logo">
+            <a href="home.html">
+                <img src="/assets/src/images/vip/Screenshot_5.png" alt="" class="dark-logo">
+                <img src="/assets/src/images/vip/Screenshot_3.png" alt="" class="light-logo">
+            </a>
+            <div class="close-sidebar" data-toggle="left-sidebar-close">
+                <i class="ion-close-round"></i>
+            </div>
+        </div>
+        <div class="menu-block customscroll">
+            <div class="sidebar-menu">
+                <ul id="accordion-menu">
+                    <li>
+                        <a href="/home/users" class="dropdown-toggle no-arrow">
+                            <span class="micon dw dw-house-1"></span><span class="mtext">Home</span>
+                        </a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="javascript:" class="dropdown-toggle">
+                            <span class="micon dw dw-group"></span><span class="mtext">User</span>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="/users">List Product</a></li>
+                            <li><a href="order/cart.html">Cart</a>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="javascript:" class="dropdown-toggle">
+                            <span class="micon dw dw-list"></span><span class="mtext">List</span>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="/products/list_user">List Account</a></li>
+                            <li><a href="/products">List Product</a></li>
+                            <li><a href="order/list_history_order.html">List Order</a></li>
+                            <li><a href="order/cart.html">Cart</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="javascript:" class="dropdown-toggle">
+                            <span class="micon dw dw-paint-brush"></span><span class="mtext">Icons</span>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="/font-awesome">FontAwesome Icons</a></li>
+                            <li><a href="/foundation">Foundation Icons</a></li>
+                            <li><a href="/ionicons">Ionicons Icons</a></li>
+                            <li><a href="/themify">Themify Icons</a></li>
+                            <li><a href="/custom-icon">Custom Icons</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="javascript:" class="dropdown-toggle">
+                            <span class="micon dw dw-browser2"></span><span class="mtext">Error Pages</span>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="error/400">400</a></li>
+                            <li><a href="error/403">403</a></li>
+                            <li><a href="error/404">404</a></li>
+                            <li><a href="error/500">500</a></li>
+                            <li><a href="error/503">503</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="sitemap.html" class="dropdown-toggle no-arrow">
+                            <span class="micon dw dw-diagram"></span><span class="mtext">Sitemap</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="chat.html" class="dropdown-toggle no-arrow">
+                            <span class="micon dw dw-chat3"></span><span class="mtext">Chat</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="invoice.html" class="dropdown-toggle no-arrow">
+                            <span class="micon dw dw-invoice"></span><span class="mtext">Invoice</span>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="dropdown-divider"></div>
+                    </li>
+                    <li style="background-color: #0f121f">
+                        <a href="https://github.com/sjk193/" target="_blank"
+                           class="dropdown-toggle no-arrow">
+                            <span class="icon-copy fa fa-github"></span>
+                            <span style="border: 1px" class="mtext">Github
+                                <img src="/assets/vendors/images/github.svg" alt="" width="25">
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+
+
+

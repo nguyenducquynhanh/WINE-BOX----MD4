@@ -1,0 +1,81 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
+
+    <th:block th:fragment="modal_read_product">
+<!--    <div id="modalReadProduct" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">-->
+<!--        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <h4 class="modal-title">Wine Information</h4>-->
+<!--                    <button class="icon-copy fa fa-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--&lt;!&ndash;                    <i class="icon-copy fa fa-close" aria-hidden="true"></i>&ndash;&gt;-->
+<!--                </div>-->
+<!--                <div class="modal-body">-->
+<!--                    <div class="modal-alert-danger hide"></div>-->
+
+<!--                    <form id="frmReadProduct" method="post">-->
+<!--                        <div class="row g-3">-->
+<!--&lt;!&ndash;                            <div id="imageRead" name="imageRead" class="col-md-6"></div>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <div class="col-md-6">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <div class="col-sm-12">&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <label for="productNameRead" class="form-label">Wine Name</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <p id="productNameRead" name="productNameRead"></p>&ndash;&gt;-->
+<!--&lt;!&ndash;                                </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <div class="col-sm-12">&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <label for="categoryRead">Type</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <p id="categoryRead" name="categoryRead"></p>&ndash;&gt;-->
+<!--&lt;!&ndash;                                </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <div class="col-sm-12">&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <label for="priceRead" class="form-label">Price</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <p id="priceRead" name="priceRead"></p>&ndash;&gt;-->
+<!--&lt;!&ndash;                                </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <div class="col-sm-12">&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <label for="capacityRead">Capacity</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <p id="capacityRead" name="capacityRead"></p>&ndash;&gt;-->
+<!--&lt;!&ndash;                                </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <div class="col-sm-12">&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <label for="yearRead" class="form-label">Year</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <p id="yearRead" name="yearRead"></p>&ndash;&gt;-->
+<!--&lt;!&ndash;                                </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <div class="col-sm-12">&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <label for="originRead" class="form-label">Origin</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <p id="originRead" name="originRead"></p>&ndash;&gt;-->
+<!--&lt;!&ndash;                                </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                            </div>&ndash;&gt;-->
+<!--                        </div>-->
+<!--                    </form>-->
+<!--                </div>-->
+<!--                <div class="modal-footer">-->
+<!--                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+
+
+
+
+
+
+
+<div id="modalReadProduct" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class='modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h5 class='modal-title'>Wine Information</h5>
+                <i type='button' class="icon-copy fa fa-close" aria-hidden="true" data-bs-dismiss='modal' aria-label='Close'></i>
+            </div>
+            <div class='modal-body' style="overflow: hidden">
+                <div class='modal-alert-danger hide'></div>
+                <form id='frmReadProduct' method="post">
+                    <div class='row g-3'></div>
+                </form>
+            </div>
+            <div class='modal-footer'>
+<!--                data-bs-dismiss= 'modal'-->
+                <button  class='btn btn-secondary' id="btn-close" type='button'>Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+</th:block>
