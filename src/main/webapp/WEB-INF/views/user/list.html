@@ -46,6 +46,19 @@
             margin-bottom: 25px;
         }
 
+        #search-input {
+            position: relative;
+
+        }
+        #search-icon {
+            position: absolute;
+            top: 46px;
+            font-size: 20px;
+            right: 25px;
+            z-index: 1;
+        }
+
+
     </style>
 
 </head>
@@ -80,7 +93,27 @@
                 </div>
             </div>
             <div class="product-wrap">
-                <div class="product-list">
+                <div class="row">
+                    <div class = "col-sm-5">
+                        <label class = "form-label" style="font-size: 20px; font-weight: bold ">Lọc sản phẩm theo giá</label>
+                        <select class="form-control" id = "filterPrice">
+                            <option  >-- Chọn mức giá muốn tìm kiếm --</option>
+                            <option value="1">Dưới 500$</option>
+                            <option value="2">Từ 500$ - 1000$</option>
+                            <option value="3">Trên 1000$</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-4 header-search">
+                        <form>
+                            <div class="form-group mb-0" style="margin-top: 34px">
+                                <i id="search-icon" class="icon-copy fa fa-search" aria-hidden="true"></i>
+                                <input id="search-input" type="text" class="form-control search-input" placeholder="Search Here">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="product-list mt-3">
                     <ul id="product-list" class="row">
 
                     </ul>
@@ -302,6 +335,198 @@
         $('#modalReadProduct').modal('hide');
 
     });
+
+    $("#search-icon").on('click', () => {
+        let searchInput = $('#search-input').val();
+
+        $.ajax({
+            "headers": {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            "type": "POST",
+            "url": "http://localhost:8080/api/admins/search",
+            "data": JSON.stringify(searchInput)
+        })
+            .done((item) => {
+                $("#product-list").html("");
+                console.log(item);
+
+                $.each(item, (i, item) => {
+                    let str = `
+                        <li class="col-lg-3 col-md-6 col-sm-12">
+                            <div class="product-box">
+                                <div class="producct-img"><img src="${item.urlImage}" alt=""/></div>
+                                <div class="product-caption">
+                                    <h4><a style="margin-bottom: 30px; " href="#">${item.productName}</a></h4>
+                                    <div class="price">
+                                        <!-- <del>$55.5</del><ins>$49.5</ins> -->
+                                        <!-- <ins style="color: #9d1515">$${item.price}</ins> -->
+                                        <ins  style="margin-bottom: -10px; color: #af0707">$${item.price}</ins>
+                                    </div>
+                                    <div class="price" style="text-decoration: none">
+                                        <ins data-id = "${item.id}"><span style="color: #178a17"> ${item.status.status} : ${item.quantity}</span></ins>
+                                    </div>
+
+                                    <div>
+                                        <button data-id = "${item.id}" style="margin-bottom: 5px" href="" class="btn btn-outline-warning btn-sm read"><i class="icon-copy fa fa-list-alt" aria-hidden="true"></i> Read more</button>
+                                        <button href="" class="btn btn-outline-primary btn-sm cart"><i class="icon-copy fa fa-shopping-cart" aria-hidden="true"></i> Add to cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    `;
+                    $("#product-list").append(str);
+                })
+                handleBtn();
+                // showCategory();
+                // showCapacity();
+            })
+    })
+
+    $("#search-input").on('input', () => {
+        let searchInput = $('#search-input').val();
+
+        $.ajax({
+            "headers": {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            "type": "POST",
+            "url": "http://localhost:8080/api/admins/search",
+            "data": JSON.stringify(searchInput)
+        })
+            .done((item) => {
+                $("#product-list").html("");
+                console.log(item);
+
+                $.each(item, (i, item) => {
+                    let str = `
+                        <li class="col-lg-3 col-md-6 col-sm-12">
+                            <div class="product-box">
+                                <div class="producct-img"><img src="${item.urlImage}" alt=""/></div>
+                                <div class="product-caption">
+                                    <h4><a style="margin-bottom: 30px; " href="#">${item.productName}</a></h4>
+                                    <div class="price">
+                                        <!-- <del>$55.5</del><ins>$49.5</ins> -->
+                                        <!-- <ins style="color: #9d1515">$${item.price}</ins> -->
+                                        <ins  style="margin-bottom: -10px; color: #af0707">$${item.price}</ins>
+                                    </div>
+                                    <div class="price" style="text-decoration: none">
+                                        <ins data-id = "${item.id}"><span style="color: #178a17"> ${item.status.status} : ${item.quantity}</span></ins>
+                                    </div>
+
+                                    <div>
+                                        <button data-id = "${item.id}" style="margin-bottom: 5px" href="" class="btn btn-outline-warning btn-sm read"><i class="icon-copy fa fa-list-alt" aria-hidden="true"></i> Read more</button>
+                                        <button href="" class="btn btn-outline-primary btn-sm cart"><i class="icon-copy fa fa-shopping-cart" aria-hidden="true"></i> Add to cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    `;
+                    $("#product-list").append(str);
+                })
+                handleBtn();
+
+
+                // showCategory();
+                // showCapacity();
+            })
+    })
+
+    $("#search-input").on('change', () => {
+        let searchInput = $('#search-input').val();
+
+        $.ajax({
+            "headers": {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            "type": "POST",
+            "url": "http://localhost:8080/api/admins/search",
+            "data": JSON.stringify(searchInput)
+        })
+            .done((item) => {
+                $("#product-list").html("");
+                console.log(item);
+                $.each(item, (i, item) => {
+                    let str = `
+                        <li class="col-lg-3 col-md-6 col-sm-12">
+                            <div class="product-box">
+                                <div class="producct-img"><img src="${item.urlImage}" alt=""/></div>
+                                <div class="product-caption">
+                                    <h4><a style="margin-bottom: 30px; " href="#">${item.productName}</a></h4>
+                                    <div class="price">
+                                        <!-- <del>$55.5</del><ins>$49.5</ins> -->
+                                        <!-- <ins style="color: #9d1515">$${item.price}</ins> -->
+                                        <ins  style="margin-bottom: -10px; color: #af0707">$${item.price}</ins>
+                                    </div>
+                                    <div class="price" style="text-decoration: none">
+                                        <ins data-id = "${item.id}"><span style="color: #178a17"> ${item.status.status} : ${item.quantity}</span></ins>
+                                    </div>
+
+                                    <div>
+                                        <button data-id = "${item.id}" style="margin-bottom: 5px" href="" class="btn btn-outline-warning btn-sm read"><i class="icon-copy fa fa-list-alt" aria-hidden="true"></i> Read more</button>
+                                        <button href="" class="btn btn-outline-primary btn-sm cart"><i class="icon-copy fa fa-shopping-cart" aria-hidden="true"></i> Add to cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    `;
+                    $("#product-list").append(str);
+                })
+                handleBtn();
+
+
+                // showCategory();
+                // showCapacity();
+            })
+    })
+
+    $("#filterPrice").on('change', () => {
+        let price = $("#filterPrice").val();
+
+        $.ajax({
+            "headers": {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            "type": "POST",
+            "url": "http://localhost:8080/api/admins/filter",
+            "data": JSON.stringify(price)
+        })
+            .done((item) => {
+                $("#product-list").html("");
+                console.log(item);
+                $.each(item, (i, item) => {
+                    let str = `
+                        <li class="col-lg-3 col-md-6 col-sm-12">
+                            <div class="product-box">
+                                <div class="producct-img"><img src="${item.urlImage}" alt=""/></div>
+                                <div class="product-caption">
+                                    <h4><a style="margin-bottom: 30px; " href="#">${item.productName}</a></h4>
+                                    <div class="price">
+                                        <!-- <del>$55.5</del><ins>$49.5</ins> -->
+                                        <!-- <ins style="color: #9d1515">$${item.price}</ins> -->
+                                        <ins  style="margin-bottom: -10px; color: #af0707">$${item.price}</ins>
+                                    </div>
+                                    <div class="price" style="text-decoration: none">
+                                        <ins data-id = "${item.id}"><span style="color: #178a17"> ${item.status.status} : ${item.quantity}</span></ins>
+                                    </div>
+
+                                    <div>
+                                        <button data-id = "${item.id}" style="margin-bottom: 5px" href="" class="btn btn-outline-warning btn-sm read"><i class="icon-copy fa fa-list-alt" aria-hidden="true"></i> Read more</button>
+                                        <button href="" class="btn btn-outline-primary btn-sm cart"><i class="icon-copy fa fa-shopping-cart" aria-hidden="true"></i> Add to cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    `;
+                    $("#product-list").append(str);
+                })
+                handleBtn();
+            })
+    })
 
     function handleBtn() {
         // handleUpdateBtn();

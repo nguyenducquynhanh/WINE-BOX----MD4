@@ -83,4 +83,31 @@ public class ProductServiceImpl implements IProductService {
 
         return listSearch;
     }
+
+    @Override
+    public List<ProductDTO> filterPrice(String price) {
+        List<ProductDTO> productDTOs = findAllProductDTO();
+        List<ProductDTO> listFilter = new ArrayList<>();
+
+        for(ProductDTO productDTO : productDTOs){
+            if(price.equals("1")){
+                int  priceProduct = Integer.parseInt(productDTO.getPrice());
+                if(0< priceProduct && priceProduct < 500) {
+                    listFilter.add(productDTO);
+                }
+            } else if(price.equals("2")) {
+                int  priceProduct = Integer.parseInt(productDTO.getPrice());
+                if(500 < priceProduct && priceProduct < 1000) {
+                    listFilter.add(productDTO);
+                }
+            }else {
+                int  priceProduct = Integer.parseInt(productDTO.getPrice());
+                if(priceProduct > 1000) {
+                    listFilter.add(productDTO);
+                }
+            }
+        }
+
+        return listFilter;
+    }
 }

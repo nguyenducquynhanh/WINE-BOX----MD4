@@ -188,11 +188,7 @@ public class AdminRestController {
 
     @DeleteMapping("/block/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
-    public ResponseEntity<?> doBlock(@PathVariable Long id, BindingResult bindingResult){
-
-        if(bindingResult.hasErrors()){
-            return AppUtils.errors(bindingResult);
-        }
+    public ResponseEntity<?> doBlock(@PathVariable Long id){
 
         try{
             productService.remove(id);
@@ -272,9 +268,21 @@ public class AdminRestController {
     public ResponseEntity<?> search(@RequestBody String searchInput) {
         searchInput = searchInput.replace('"',' ').trim().toLowerCase();
         List<ProductDTO> listSearch = productService.search(searchInput);
+
         if(listSearch.size() == 0) {
             return new ResponseEntity<>("Danh sach trong", HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(listSearch,HttpStatus.OK);
+    }
+
+    @PostMapping("/filter")
+    public ResponseEntity<?> filter(@RequestBody String price){
+        price = price.replace('"',' ').trim();
+        List<ProductDTO> listFilter = productService.filterPrice(price);
+
+        if(listFilter.size() == 0) {
+            return new ResponseEntity<>("Danh sach trong", HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(listFilter,HttpStatus.OK);
     }
 }

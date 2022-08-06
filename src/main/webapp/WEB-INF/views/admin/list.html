@@ -53,6 +53,17 @@
                         </div>
                     </div>
                 </div>
+                <div class="pd-20 row">
+                    <div class = "col-sm-5">
+                        <label class = "form-label" style="font-size: 20px; font-weight: bold ">Lọc sản phẩm theo giá</label>
+                        <select class="form-control" id = "filterPrice">
+                            <option  >-- Chọn mức giá muốn tìm kiếm --</option>
+                            <option value="1">Dưới 500$</option>
+                            <option value="2">Từ 500$ - 1000$</option>
+                            <option value="3">Trên 1000$</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="pb-20">
                     <table class="data-table table table-hover hover multiple-select-row nowrap" id="tbListProduct">
                         <thead>
@@ -74,7 +85,6 @@
                     </table>
                 </div>
             </div>
-
         </div>
         <th:block th:replace="/layout/footer :: footer"/>
         <th:block th:replace="/admin/modal_add_product :: modal_add_product"/>
@@ -458,29 +468,29 @@
                         </div>
                         <div class="col-md-6 text-center">
                             <div class="col-sm-12">
-                                <button type="button" class="label btn btn-secondary">Wine Name</button>
-                                <p style="font-size: 15px; margin-bottom: 8px; margin-top: 4px; color: black"  id="productNameRead" name="productNameRead"><strong><i>${item.productName}</i></strong></p>
+<!--                                <button type="button" class="label btn btn-secondary">Wine Name</button>-->
+                                <p style="font-size: 19px; margin-bottom: 20px; margin-top: 4px; color: black"  id="productNameRead" name="productNameRead"><strong><i>${item.productName}</i></strong></p>
                             </div>
                             <div class="col-sm-12">
-                                <label class ="label btn btn-light" for="categoryRead"><strong>Type</strong></label>
-                                <p  id="categoryRead" name="categoryRead"><strong><i>${item.category.category}</i></strong></p>
+                                <label style="margin-top: 4px;" class ="label btn btn-light" for="categoryRead"><strong>Type</strong></label>
+                                <p style="color: #d0ab19; margin-bottom: 2px; font-size: 15px"  id="categoryRead" name="categoryRead"><strong><i>${item.category.category}</i></strong></p>
                             </div>
                             <div class="col-sm-12">
-                                <label class = "label btn btn-light" for="priceRead"><strong>Price</strong></label>
-                                <p style="color: #af0707" id="priceRead" name="priceRead"><strong><i>$${item.price}</i></strong></p>
+                                <label style="margin-top: 4px;" class = "label btn btn-light" for="priceRead"><strong>Price</strong></label>
+                                <p style="color: #af0707; margin-bottom: 2px; font-size: 15px" id="priceRead" name="priceRead"><strong><i>$${item.price}</i></strong></p>
                             </div>
                             <div class="col-sm-12">
-                                <label class = "label btn btn-light" for="capacityRead"><strong>Capacity</strong></label>
-                                <p  id="capacityRead" name="capacityRead"><strong><i><strong><i>${item.capacity.capacity}</i></strong></i></strong></p>
+                                <label style="margin-top: 4px;" class = "label btn btn-light" for="capacityRead"><strong>Capacity</strong></label>
+                                <p style="color: #d0ab19; margin-bottom: 2px; font-size: 15px"  id="capacityRead" name="capacityRead"><strong><i><strong><i>${item.capacity.capacity}</i></strong></i></strong></p>
                             </div>
                             <div class="col-sm-12">
-                                <label class = "label btn btn-light" for="yearRead"><strong>Year</strong></label>
-                                <p  id="yearRead" name="yearRead" ><strong><i>${item.year}</i></strong></p>
+                                <label style="margin-top: 4px;" class = "label btn btn-light" for="yearRead"><strong>Year</strong></label>
+                                <p style="color: #a819d0; margin-bottom: 2px; font-size: 15px"  id="yearRead" name="yearRead" ><strong><i>${item.year}</i></strong></p>
                             </div>
                             <div class="col-sm-12">
                                 <!-- <p> -->
-                                    <label class = "label btn btn-light" for="originRead"><strong>Origin</strong></label>
-                                <p id="originRead" name="originRead" ><strong><i>${item.origin}</i></strong></p>
+                                    <label style="margin-top: 4px;" class = "label btn btn-light" for="originRead"><strong>Origin</strong></label>
+                                <p style="color: #a819d0; margin-bottom: 2px; font-size: 15px" id="originRead" name="originRead" ><strong><i>${item.origin}</i></strong></p>
                             </div>
                         </div>
                     </div>
@@ -876,6 +886,49 @@
 
                 // showCategory();
                 // showCapacity();
+            })
+    })
+
+    $("#filterPrice").on('change', () => {
+        let price = $("#filterPrice").val();
+
+        $.ajax({
+            "headers": {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            "type": "POST",
+            "url": "http://localhost:8080/api/admins/filter",
+            "data": JSON.stringify(price)
+        })
+            .done((item) => {
+                $("#tbListProduct tbody").html("");
+                console.log(item);
+                $.each(item, (i, item) => {
+                    let str = `
+                        <tr id="tr_${item.id}">
+
+                            <td class="text-center"><strong>${item.id}</strong></td>
+                            <td style="font-size: 15px"><strong>${item.productName}</strong></td>
+                            <td class="text-center">${item.category.category}</td>
+                            <td class="text-center">
+                                <img style="width: 110px; height: auto" src="${item.urlImage}" alt=""/>
+                            </td>
+                            <td style="font-size: 13px" class="text-center"><strong><i>${item.capacity.capacity}</i></strong></td>
+                            <td style="margin-bottom: -10px; color: #af0707">$${item.price}</td>
+                            <td class="text-center">${item.quantity}</td>
+                            <td class="text-center">
+                              <button data-id = "${item.id}" type="button" class="btn btn-success btn-sm"><span style="font-size: 10px">${item.status.status} </span></button></td>
+                            <td class="text-center">
+                              <button title="Read More" data-id = "${item.id}" type="button" class="btn btn-outline-warning read" id="btnRead(${item.id})"> <i class="icon-copy fa fa-list-alt" aria-hidden="true"></i> </button>
+                              <button title="Update" data-id = "${item.id}" type="button" class="btn btn-outline-secondary update" id="btnUpdate(${item.id})"> <i class="fas fa-pen-square"></i> </button>
+                              <button title="Delete" data-id = "${item.id}" type="button" class="btn btn-outline-danger block" id="btnBlock(${item.id})"> <i class="fas fa-ban"></i> </button>
+                          </td>
+                        </tr>
+                    `;
+                    $("#tbListProduct tbody").prepend(str);
+                })
+                handleBtn();
             })
     })
 

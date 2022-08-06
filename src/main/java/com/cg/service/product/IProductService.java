@@ -20,5 +20,6 @@ public interface IProductService extends IGeneralService<Product> {
 
     List<ProductDTO> search(String searchInput);
 
+    List<ProductDTO> filterPrice(String price);
 
 }
