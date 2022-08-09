@@ -19,7 +19,19 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUserName(String userName);
 
-    @Query("SELECT NEW com.cg.model.dto.UserDTO (u.id, u.userName) FROM User u WHERE u.userName = ?1")
+    @Query("SELECT NEW com.cg.model.dto.UserDTO (" +
+            "u.id," +
+            " u.fullName," +
+            "u.userName," +
+            "u.password, " +
+            "u.gender, " +
+            "u.urlImage," +
+            " u.phone," +
+            " u.email, " +
+            "u.address," +
+            " u.role, " +
+            "u.statusAccount" +
+            ") FROM User u WHERE u.userName = ?1")
     Optional<UserDTO> findUserDTOByUserName(String userName);
 
     @Query ("SELECT NEW com.cg.model.dto.UserDTO (" +

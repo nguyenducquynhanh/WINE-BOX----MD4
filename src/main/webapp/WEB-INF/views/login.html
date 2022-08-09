@@ -138,8 +138,7 @@
                 }, 2000);
             })
             .fail((jqXHR) => {
-                console.log(jqXHR)
-                alert("Register fail!");
+                App.SweetAlert.showErrorAlert("This account is exist!")
             })
     });
 
@@ -148,7 +147,7 @@
             userName: $("#name").val(),
             password: $("#pass").val()
         }
-
+        console.log(user);
 
         $.ajax({
             "headers": {
@@ -161,12 +160,12 @@
         })
             .done((resp) => {
                 console.log(resp);
-                App.SweetAlert.showSuccessAlert('Login successful!');
 
-
-                for (let role of resp.roles) {
-
-                    if (role.authority === "USER") {
+                if(resp.statusAccount.id === 2) {
+                    App.SweetAlert.showErrorAlert("Your account has been lock!");
+                }else {
+                    App.SweetAlert.showSuccessAlert('Login successful!');
+                    if (resp.role.id === 1) {
                         setTimeout(function () {
                             window.location.href = `/home/users/${resp.id}`;
                         }, 1000);
@@ -176,6 +175,23 @@
                         window.location.href = `/home/admins/${resp.id}`;
                     }, 1000);
                 }
+
+
+
+
+
+                // for (let role of resp.roles) {
+                //
+                //     if (role.authority === "USER") {
+                //         setTimeout(function () {
+                //             window.location.href = `/home/users/${resp.id}`;
+                //         }, 1000);
+                //         return;
+                //     }
+                //     setTimeout(function () {
+                //         window.location.href = `/home/admins/${resp.id}`;
+                //     }, 1000);
+                // }
 
 
 

@@ -49,6 +49,7 @@ public class AuthAPI {
     @Autowired
     private AppUtils appUtils;
 
+
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
 
@@ -82,6 +83,8 @@ public class AuthAPI {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword()));
 
+        Optional<UserDTO> userDTO = userService.findUserDTOByUserName(user.getUserName());
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = jwtService.generateTokenLogin(authentication);
@@ -109,8 +112,7 @@ public class AuthAPI {
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.SET_COOKIE, springCookie.toString())
-                .body(jwtResponse);
-
+                .body(userDTO.get());
     }
 
 

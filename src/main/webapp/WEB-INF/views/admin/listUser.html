@@ -88,25 +88,33 @@
                                 <p><i>${item.gender.gender}</i></p>
                                 <div style="color: #a62ee1;" class="work"><strong><i class="ion-android-person"></i> ${item.role.code}</strong></div>
                                 `;
-
-                if(item.statusAccount.id === 1) {
-
+                if(item.role.id === 2) {
                   str += `
+                        <span id="blockView" class="text-success work" name="blockView"><i class="icon-copy fa fa-check" aria-hidden="true"></i>${item.statusAccount.statusAccount}</span>
+                        </div>
+                            <div class="contact-skill">
+                                <button title="Update" data-id = "${item.id}" type="button" class="btn btn-warning update" id="btnUpdate(${item.id})"> <i class="icon-copy fa fa-edit" aria-hidden="true"></i></button>`;
+                }else {
+                  if(item.statusAccount.id === 1) {
+
+                    str += `
                         <span id="blockView" class="text-success work" name="blockView"><i class="icon-copy fa fa-check" aria-hidden="true"></i>${item.statusAccount.statusAccount}</span>
                         </div>
                             <div class="contact-skill">
                                 <button title="Update" data-id = "${item.id}" type="button" class="btn btn-warning update" id="btnUpdate(${item.id})"> <i class="icon-copy fa fa-edit" aria-hidden="true"></i></button>
                                 <button title="Block" data-id = "${item.id}" type="button" class="btn btn-danger block" id="btnBlock${item.id}"><i class="icon-copy fa fa-lock" aria-hidden="true"></i></button>`;
-                } else {
-                  str += `
+                  } else {
+                    str += `
                             <span id="blockView" class="text-danger work" name="blockView"><i class="icon-copy fa fa-remove" aria-hidden="true"></i> ${item.statusAccount.statusAccount}</span>
                            </div>
                             <div class="contact-skill">
                                 <button title="Update" data-id = "${item.id}" type="button" class="btn btn-warning update" id="btnUpdate(${item.id})"> <i class="icon-copy fa fa-edit" aria-hidden="true"></i></button>
                                 <button title="UnBlock" data-id = "${item.id}" type="button" class="btn btn-success block" id="btnBlock${item.id}"> <i class="icon-copy fa fa-unlock" aria-hidden="true"></i></button>`;
+                  }
+                  // <button title="Block" data-id = "${item.id}" type="button" class="btn btn-success block" id="btnBlock(${item.id})"> <i class="icon-copy fa fa-unlock" aria-hidden="true"></i></button>
                 }
-                                // <button title="Block" data-id = "${item.id}" type="button" class="btn btn-success block" id="btnBlock(${item.id})"> <i class="icon-copy fa fa-unlock" aria-hidden="true"></i></button>
-                       str += `
+
+                str += `
                         </div>
                             <div class="profile-sort-desc"><p style="color: #d31717" class="mb-0">Email: <a href="#"><u><i>${item.email}</i></u></a></p></div>
                         </div>
@@ -116,6 +124,7 @@
                     </div>
                 </li>
                     `;
+
                 $("#user-list").prepend(str);
                 // console.log(str);
               })
@@ -390,7 +399,13 @@
 
               handleBtn();
 
-              App.SweetAlert.showSuccessAlert("Block account successful!");
+              if(item.statusAccount.id === 1){
+                App.SweetAlert.showSuccessAlert("Unlock account successful!");
+              }else {
+                App.SweetAlert.showSuccessAlert("Block account successful!");
+              }
+
+
 
             })
             .fail((jqXHR) => {
@@ -467,18 +482,8 @@
                 </div>`;
               }
 
-
-              //                   <!-- <label class = "label" for="priceRead" class="form-label">Price</label> -->
-              //                   <span id="blockView" class="text-success" name="blockView"><i class="icon-copy fa fa-unlock" aria-hidden="true"></i> ${item.statusAccount.statusAccount}</span>
-              //
-              //                    <span id="blockView" class="text-success" name="blockView"><i class="icon-copy fa fa-unlock" aria-hidden="true"></i> ${item.statusAccount.statusAccount}</span>
-              //
-              //               </div>
-              //           </div>
-              //   </div>
-              //             `;
               $("#frmViewProfile div").html(str);
-              // handleBtn();
+
 
             })
             .fail((jqXHR) => {

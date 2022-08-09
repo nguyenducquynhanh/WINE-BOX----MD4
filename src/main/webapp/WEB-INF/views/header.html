@@ -110,18 +110,18 @@
             <div class="user-info-dropdown">
                 <div class="dropdown">
                     <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-<!--                        <span class="user-icon">-->
-<!--                            <img th:src="@{${user.urlImage}}" alt="">-->
-<!--                        </span>-->
-<!--                        <span class="user-name"  th:text="${user.fullName}"></span>-->
-                        <span class="user-icon"></span>
-                            <img href="/assets/vendors/images/photo3.jpg" alt="">
+                        <span class="user-icon">
+                            <img th:src="@{${user.urlImage}}" alt="">
                         </span>
-                        <span class="user-name">Hoho</span>
+                        <span class="user-name"  th:text="${user.fullName}"></span>
+<!--                        <span class="user-icon"></span>-->
+<!--                            <img href="/assets/vendors/images/photo3.jpg" alt="">-->
+<!--                        </span>-->
+<!--                        <span class="user-name">Hoho</span>-->
                     </a>
                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-                        <a class="dropdown-item" href="profile.html"><i class="dw dw-user1"></i> Profile</a>
-                        <a class="dropdown-item" href="profile.html"><i class="dw dw-settings2"></i> Setting</a>
+                        <button class="dropdown-item" id="userInfo" th:data-id="${user.id}"><i class="dw dw-user1"></i> Profile</button>
+                        <button class="dropdown-item" id="userEdit" th:data-id="${user.id}"><i class="icon-copy fa fa-edit"></i> Edit information</button>
                         <a class="dropdown-item" href="faq.html"><i class="dw dw-help"></i> Help</a>
                         <a class="dropdown-item" href="/logout"><i class="dw dw-logout"></i> Log Out</a>
                     </div>

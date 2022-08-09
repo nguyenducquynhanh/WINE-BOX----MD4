@@ -15,7 +15,7 @@
             <div class="sidebar-menu">
                 <ul id="accordion-menu">
                     <li>
-                        <a href="/home/admins" class="dropdown-toggle no-arrow">
+                        <a th:href="@{/home/admins/__${user.id}__}" class="dropdown-toggle no-arrow">
                             <span class="micon dw dw-house-1"></span><span class="mtext">Home</span>
                         </a>
                     </li>
@@ -24,8 +24,8 @@
                             <span class="micon dw dw-user"></span><span class="mtext">Management</span>
                         </a>
                         <ul class="submenu">
-                            <li><a href="/products/list_user">Account</a></li>
-                            <li><a href="/products">Product</a></li>
+                            <li><a th:href="@{/products/list_user/__${user.id}__}">Account</a></li>
+                            <li><a th:href="@{/products/__${user.id}__}">Product</a></li>
                             <li><a href="order/list_history_order">Order</a></li>
                         </ul>
                     </li>
