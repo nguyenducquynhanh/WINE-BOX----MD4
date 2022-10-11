@@ -27,19 +27,21 @@ public class LoginController {
     @GetMapping("/")
     public ModelAndView showHome(@CookieValue(value = "JWT" , defaultValue = "hello") String fooCookie) {
         ModelAndView modelAndView;
-        String username = jwtService.getUserNameFromJwtToken(fooCookie);
+        if (!fooCookie.equals("hello")) {
+            String username = jwtService.getUserNameFromJwtToken(fooCookie);
+            Optional<UserDTO> userDTO = userService.findUserDTOByUserName(username);
 
-        Optional<UserDTO> userDTO = userService.findUserDTOByUserName(username);
+            if(userDTO.get().getRole().getId() == 1) {
+                modelAndView = new ModelAndView("/homeUser");
+                modelAndView.addObject("user",userDTO.get());
+            }else {
+                modelAndView = new ModelAndView("/home");
+                modelAndView.addObject("user",userDTO.get());
+            }
 
-        if(userDTO.get().getRole().getId() == 1) {
-            modelAndView = new ModelAndView("/homeUser");
-            modelAndView.addObject("user",userDTO.get());
-        }else {
-            modelAndView = new ModelAndView("/home");
-            modelAndView.addObject("user",userDTO.get());
+            return modelAndView;
         }
-
-        return modelAndView;
+        return new ModelAndView("redirect:/login");
     }
 
     @GetMapping("/login")
